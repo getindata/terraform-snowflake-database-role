@@ -11,7 +11,7 @@ module "role_label" {
 resource "snowflake_database_role" "this" {
   count = module.this.enabled ? 1 : 0
 
-  database = snowflake_database_role.this.database
+  database = var.database_name
   name     = local.name_from_descriptor
   comment  = var.comment
 }
@@ -38,7 +38,7 @@ resource "snowflake_grant_privileges_to_database_role" "database_grants" {
   with_grant_option  = each.value.with_grant_option
   database_role_name = local.database_role_name
 
-  on_database = snowflake_database_role.this.database
+  on_database = one(snowflake_database_role.this[*].database)
 }
 
 resource "snowflake_grant_privileges_to_database_role" "schema_grants" {
@@ -50,9 +50,9 @@ resource "snowflake_grant_privileges_to_database_role" "schema_grants" {
   database_role_name = local.database_role_name
 
   on_schema = {
-    all_schemas_in_database    = each.value.all_schemas_in_database != null ? snowflake_database_role.this.database : null
-    schema_name                = each.value.schema_name != null ? "\"${snowflake_database_role.this.database}\".\"${each.value.schema_name}\"" : null
-    future_schemas_in_database = each.value.future_schemas_in_database != null ? snowflake_database_role.this.database : null
+    all_schemas_in_database    = each.value.all_schemas_in_database != null ? one(snowflake_database_role.this[*].database) : null
+    schema_name                = each.value.schema_name != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.schema_name}\"" : null
+    future_schemas_in_database = each.value.future_schemas_in_database != null ? one(snowflake_database_role.this[*].database) : null
   }
 }
 
@@ -70,7 +70,7 @@ resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
       for_each = each.value.object_type != null ? [1] : []
       content {
         object_type = each.value.object_type
-        object_name = each.value.object_name != null ? "\"${snowflake_database_role.this.database}\".\"${element(split("/", each.value.object_name), 0)}\".\"${element(split("/", each.value.object_name), 1)}\"" : null
+        object_name = each.value.object_name != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${element(split("/", each.value.object_name), 0)}\".\"${element(split("/", each.value.object_name), 1)}\"" : null
       }
     }
 
@@ -79,7 +79,7 @@ resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
       content {
         object_type_plural = each.value.all.object_type_plural
         in_database        = each.value.all.in_database
-        in_schema          = each.value.all.in_schema != null ? "\"${snowflake_database_role.this.database}\".\"${each.value.all.in_schema}\"" : null
+        in_schema          = each.value.all.in_schema != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.all.in_schema}\"" : null
       }
     }
 
@@ -88,7 +88,7 @@ resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
       content {
         object_type_plural = each.value.future.object_type_plural
         in_database        = each.value.future.in_database
-        in_schema          = each.value.future.in_schema != null ? "\"${snowflake_database_role.this.database}\".\"${each.value.future.in_schema}\"" : null
+        in_schema          = each.value.future.in_schema != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.future.in_schema}\"" : null
       }
     }
   }
