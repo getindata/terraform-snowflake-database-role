@@ -70,7 +70,7 @@ resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
       for_each = each.value.object_type != null ? [1] : []
       content {
         object_type = each.value.object_type
-        object_name = each.value.object_name # "\"${snowflake_database_role.db_role.database}\".\"my_schema\".\"my_view\"" # note this is a fully qualified name!
+        object_name = each.value.object_name != null ? "\"${snowflake_database_role.this.database}\".\"${element(split("/", each.value.object_name), 0)}\".\"${element(split("/", each.value.object_name), 1)}\"" : null
       }
     }
 
@@ -79,7 +79,7 @@ resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
       content {
         object_type_plural = each.value.all.object_type_plural
         in_database        = each.value.all.in_database
-        in_schema          = each.value.all.in_schema # "\"${snowflake_database_role.db_role.database}\".\"my_schema\"" # note this is a fully qualified name!
+        in_schema          = each.value.all.in_schema != null ? "\"${snowflake_database_role.this.database}\".\"${each.value.all.in_schema}\"" : null
       }
     }
 
@@ -88,11 +88,10 @@ resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
       content {
         object_type_plural = each.value.future.object_type_plural
         in_database        = each.value.future.in_database
-        in_schema          = each.value.future.in_schema # "\"${snowflake_database_role.db_role.database}\".\"my_schema\"" # note this is a fully qualified name!
+        in_schema          = each.value.future.in_schema != null ? "\"${snowflake_database_role.this.database}\".\"${each.value.future.in_schema}\"" : null
       }
     }
   }
 }
 
 # TODO: check if in_database can be used with conunction with in_schema
-# TODO: Refactor all_schemas_in_database = snowflake_database_role.db_role.database to use snowflake_database_role to use
