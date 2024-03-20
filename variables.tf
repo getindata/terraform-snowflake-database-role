@@ -107,4 +107,9 @@ variable "schema_objects_grants" {
     (grant.future != null && substr(grant.future.object_type_plural, -1, 1) == "S")])
     error_message = "Variable `schema_objects_grants` fails validation - `object_type_plural` must end with 'S'."
   }
+
+  validation {
+    condition     = alltrue([for grant in var.schema_objects_grants : contains(grant.object_name, "/")])
+    error_message = "Variable `schema_objects_grants` fails validation - `object_name` must contain '/' and have schema_name/object_name format."
+  }
 }
