@@ -23,123 +23,68 @@ variable "granted_database_roles" {
 
 variable "database_grants" {
   description = "Grants on a database level"
-  type = object({
-    all_privileges = optional(bool, false)
-    privileges     = optional(list(string), null)
-  })
-  default = {}
+  type = list(object({
+    all_privileges    = optional(bool, false)
+    with_grant_option = optional(bool, false)
+    privileges        = optional(list(string), null)
+    database_name     = string
+  }))
+  default = []
+
+  validation {
+    condition     = alltrue([for grant in var.database_grants : (grant.privileges != null) != (grant.all_privileges != null)])
+    error_message = "Variable `database_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
+  }
 }
 
 variable "schema_grants" {
   description = "Grants on a schema level"
   type = list(object({
-    schema_name    = optional(string)
-    on_all         = optional(bool)
-    on_future      = optional(bool)
-    all_privileges = optional(bool)
-    privileges     = optional(list(string), null)
+    all_privileges             = optional(bool, false)
+    with_grant_option          = optional(bool, false)
+    privileges                 = optional(list(string), null)
+    all_schemas_in_database    = optional(string, null)
+    future_schemas_in_database = optional(string, null)
+    schema_name                = string
   }))
   default = []
   validation {
-    condition     = alltrue([for grant in var.schema_grants : !anytrue([grant.privileges == null && grant.all_privileges == null, grant.privileges != null && grant.all_privileges != null])])
+    condition     = alltrue([for grant in var.schema_grants : (grant.privileges != null) != (grant.all_privileges != null)])
     error_message = "Variable `schema_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
   }
   validation {
-    condition     = alltrue([for grant in var.schema_grants : !alltrue([grant.schema_name != null, grant.on_future || grant.on_all])])
-    error_message = "Variable `schema_grants` fails validation - when `schema_name` is set, `on_future` and `on_all` have to be false / not set."
+    condition = alltrue([for grant in var.schema_grants :
+      sum(
+        [
+          grant.all_schemas_in_database != null ? 1 : 0,
+          grant.future_schemas_in_database != null ? 1 : 0,
+      grant.schema_name != null ? 1 : 0]) == 1
+      ]
+    )
+    error_message = "Variable `schema_grants` fails validation - only one of `all_schemas_in_database`, `future_schemas_in_database`, or `schema_name` can be set."
   }
 }
 
-variable "table_grants" {
-  description = "Grants on a table level"
+variable "schema_objects_grants" {
+  description = "Grants on a schema object level"
   type = list(object({
-    database_name  = string
-    schema_name    = string
-    table_name     = optional(string)
-    on_future      = optional(bool)
-    on_all         = optional(bool)
-    all_privileges = optional(bool)
-    privileges     = optional(list(string), null)
+    all_privileges    = optional(bool, false)
+    with_grant_option = optional(bool, false)
+    privileges        = optional(list(string), null)
+    object_type       = optional(string, null)
+    object_name       = optional(string, null)
+    all               = optional(bool, false)
+    future            = optional(bool, false)
   }))
   default = []
-  validation {
-    condition     = alltrue([for grant in var.table_grants : !anytrue([grant.privileges == null && grant.all_privileges == null, grant.privileges != null && grant.all_privileges != null])])
-    error_message = "Variable `table_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
-  }
-  validation {
-    condition     = alltrue([for grant in var.table_grants : !alltrue([grant.table_name != null, grant.on_future || grant.on_all])])
-    error_message = "Variable `table_grants` fails validation - when `table_name` is set, `on_future` and `on_all` have to be false / not set."
-  }
-}
 
-variable "external_table_grants" {
-  description = "Grants on a external table level"
-  type = list(object({
-    database_name       = string
-    schema_name         = string
-    external_table_name = optional(string)
-    on_future           = optional(bool)
-    on_all              = optional(bool)
-    all_privileges      = optional(bool)
-    privileges          = optional(list(string), null)
-  }))
-  default = []
   validation {
-    condition     = alltrue([for grant in var.external_table_grants : !anytrue([grant.privileges == null && grant.all_privileges == null, grant.privileges != null && grant.all_privileges != null])])
-    error_message = "Variable `external_table_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
+    condition     = alltrue([for grant in var.schema_objects_grants : (grant.privileges != null) != (grant.all_privileges != null)])
+    error_message = "Variable `schema_objects_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
   }
-  validation {
-    condition     = alltrue([for grant in var.external_table_grants : !alltrue([grant.external_table_name != null, grant.on_future || grant.on_all])])
-    error_message = "Variable `external_table_grants` fails validation - when `external_table_name` is set, `on_future` and `on_all` have to be false / not set."
-  }
-}
 
-variable "view_grants" {
-  description = "Grants on a view level"
-  type = list(object({
-    database_name  = string
-    schema_name    = string
-    view_name      = optional(string)
-    on_future      = optional(bool)
-    on_all         = optional(bool)
-    all_privileges = optional(bool)
-    privileges     = optional(list(string), null)
-  }))
-  default = []
   validation {
-    condition     = alltrue([for grant in var.view_grants : !anytrue([grant.privileges == null && grant.all_privileges == null, grant.privileges != null && grant.all_privileges != null])])
-    error_message = "Variable `view_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
+    condition     = alltrue([for grant in var.schema_objects_grants : (grant.all != null) != (grant.future != null)])
+    error_message = "Variable `schema_objects_grants` fails validation - only one of `all` or `future` can be set."
   }
-  validation {
-    condition     = alltrue([for grant in var.view_grants : !alltrue([grant.view_name != null, grant.on_future || grant.on_all])])
-    error_message = "Variable `view_grants` fails validation - when `view_name` is set, `on_future` and `on_all` have to be false / not set."
-  }
-}
-
-variable "dynamic_table_grants" {
-  description = "Grants on a dynamic_table level"
-  type = list(object({
-    database_name      = string
-    schema_name        = optional(string)
-    dynamic_table_name = optional(string)
-    on_future          = optional(bool, false)
-    on_all             = optional(bool, false)
-    all_privileges     = optional(bool)
-    privileges         = optional(list(string), null)
-  }))
-  default = []
-  validation {
-    condition     = alltrue([for grant in var.dynamic_table_grants : !anytrue([grant.privileges == null && grant.all_privileges == null, grant.privileges != null && grant.all_privileges != null])])
-    error_message = "Variable `dynamic_table_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
-  }
-  validation {
-    condition     = alltrue([for grant in var.dynamic_table_grants : !alltrue([grant.dynamic_table_name != null, grant.on_future || grant.on_all])])
-    error_message = "Variable `dynamic_table_grants` fails validation - when `dynamic_table_name` is set, `on_future` and `on_all` have to be false / not set."
-  }
-}
-
-variable "descriptor_name" {
-  description = "Name of the descriptor used to form a resource name"
-  type        = string
-  default     = "snowflake-database-role"
 }
