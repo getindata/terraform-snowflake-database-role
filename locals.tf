@@ -6,5 +6,4 @@ locals {
   ), module.role_label.delimiter) : null
 
   database_role_name = "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\""
-
 }
