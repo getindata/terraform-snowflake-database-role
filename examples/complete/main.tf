@@ -2,15 +2,14 @@ module "snowflake_database_role" {
   source  = "../../"
   context = module.this.context
 
-  database_name = "PS_PLAYGROUND"
-  comment       = "Database role for PS_PLAYGROUND"
-  name          = "PS_DB_ROLE"
+  database_name = "PLAYGROUND_DB"
+  comment       = "Database role for PLAYGROUND_DB"
+  name          = "EXAMPLE_DB_ROLE"
 
-
-  parent_database_role = "PS_DB_ROLE_1"
+  parent_database_role = "EXAMPLE_DB_ROLE_1"
   granted_database_roles = [
-    "PS_DB_ROLE_2",
-    "PS_DB_ROLE_3"
+    "EXAMPLE_DB_ROLE_2",
+    "EXAMPLE_DB_ROLE_3"
   ]
   database_grants = [
     {

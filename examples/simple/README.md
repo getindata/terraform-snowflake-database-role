@@ -1,14 +1,14 @@
 # Simple Example
 
 ```terraform
-module "terraform_module_template" {
+module "snowflake_database_role" {
   source = "../../"
 
-  example_var = "This is a example value."
-  sub_resource = {
-    example_var = "This is a example value of sub resource."
-  }
+  database_name = "PLAYGROUND_DB"
+  comment       = "Database role for PLAYGROUND_DB"
+  name          = "EXAMPLE_DB_ROLE"
 }
+
 ```
 
 ## Usage
