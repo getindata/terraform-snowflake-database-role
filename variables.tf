@@ -49,8 +49,8 @@ variable "schema_grants" {
     all_privileges             = optional(bool)
     with_grant_option          = optional(bool, false)
     privileges                 = optional(list(string), null)
-    all_schemas_in_database    = optional(string, null)
-    future_schemas_in_database = optional(string, null)
+    all_schemas_in_database    = optional(bool)
+    future_schemas_in_database = optional(bool)
     schema_name                = optional(string, null)
   }))
   default = []

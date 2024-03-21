@@ -56,7 +56,6 @@ resource "snowflake_grant_privileges_to_database_role" "schema_grants" {
   }
 }
 
-
 resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
   for_each = module.this.enabled ? local.schema_objects_grants : {}
 
