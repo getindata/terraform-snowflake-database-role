@@ -1,19 +1,10 @@
-# Terraform Module Template
+# Snowflake Role Terraform Module
 
-
-> **Warning**:
-> This is a template document. Remember to **remove** all text in _italics_ and **update** Module name, Repo name and links/badges to the acual name of your GitHub repository/module!!!
-
-<!--- Pick Cloud provider Badge -->
-<!---![Azure](https://img.shields.io/badge/azure-%230072C6.svg?style=for-the-badge&logo=microsoftazure&logoColor=white) -->
-<!---![Google Cloud](https://img.shields.io/badge/GoogleCloud-%234285F4.svg?style=for-the-badge&logo=google-cloud&logoColor=white) -->
-![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
-<!---![Snowflake](https://img.shields.io/badge/-SNOWFLAKE-249edc?style=for-the-badge&logo=snowflake&logoColor=white) -->
+![Snowflake](https://img.shields.io/badge/-SNOWFLAKE-249edc?style=for-the-badge&logo=snowflake&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
-<!--- Replace repository name -->
-![License](https://badgen.net/github/license/getindata/terraform-module-template/)
-![Release](https://badgen.net/github/release/getindata/terraform-module-template/)
+![License](https://badgen.net/github/license/getindata/terraform-snowflake-role/)
+![Release](https://badgen.net/github/release/getindata/terraform-snowflake-role/)
 
 <p align="center">
   <img height="150" src="https://getindata.com/img/logo.svg">
@@ -22,36 +13,60 @@
 
 ---
 
-_Brief Description of MODULE:_
-
-* _What it does_
-* _What technologies it uses_
-
-> **Warning**:
-> _When using "Invicton-Labs/deepmerge/null" module - pin `tflint` version to `v0.41.0` in [pre-commit.yaml](.github/workflows/pre-commit.yml) to avoid failing `tflint` checks_
+Terraform module for managing Snowflake Database roles.
+Additionally, this module allows creating multiple grants on different Snowflake resources.
 
 ## USAGE
 
-_Example usage of the module - terraform code snippet_
-
 ```terraform
-module "template" {
-  source = "getindata/template/null"
-  # version  = "x.x.x"
+module "snowflake_database_role" {
+  source  = "getindata/database-role/snowflake"
 
-  example_var = "foo"
+  context = module.this.context
+
+  database_name = "PLAYGROUND_DB"
+  comment       = "Database role for PLAYGROUND_DB"
+  name          = "EXAMPLE_DB_ROLE"
+
+  parent_database_role = "EXAMPLE_DB_ROLE_1"
+  granted_database_roles = [
+    "EXAMPLE_DB_ROLE_2",
+    "EXAMPLE_DB_ROLE_3"
+  ]
+  database_grants = [
+    {
+      privileges = ["USAGE", "CREATE SCHEMA"]
+    },
+  ]
+
+  schema_objects_grants = [
+    {
+      privileges = ["SELECT"]
+      future = {
+        object_type_plural = "TABLES"
+        in_schema          = "BRONZE"
+      }
+    },
+    {
+      privileges  = ["SELECT"]
+      object_type = "TABLE"
+      object_name = "BRONZE/TEST_TABLE"
+    },
+    {
+      privileges = ["SELECT"]
+      future = {
+        object_type_plural = "ICEBERG TABLES"
+        in_schema          = "BRONZE"
+      }
+    }
+  ]
 }
 ```
 
-## NOTES
-
-_Additional information that should be made public, for ex. how to solve known issues, additional descriptions/suggestions_
-
 ## EXAMPLES
 
-- [Simple](examples/simple) - Basic usage of the module
-- [Complete](examples/complete) - Advanced usage of the module
-
+- [Simple](examples/simple) - creates a role
+- [Complete](examples/complete) - creates a role with example grants
 <!-- BEGIN_TF_DOCS -->
 
 
