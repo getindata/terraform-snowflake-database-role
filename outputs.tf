@@ -1,4 +1,4 @@
-# output "name" {
-#   description = "Name of the role"
-#   value       = one(snowflake_role.this[*].name)
-# }
+output "name" {
+  description = "Name of the database role"
+  value       = one(snowflake_database_role.this[*].name)
+}
