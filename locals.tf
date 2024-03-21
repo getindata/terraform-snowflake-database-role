@@ -6,4 +6,8 @@ locals {
   ), module.role_label.delimiter) : null
 
   database_role_name = "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\""
+
+
+  database_grants = { for database_grant in var.database_grants : "${one(snowflake_database_role.this[*].database)}_${one(snowflake_database_role.this[*].name)}_${database_grant.all_privileges == true ? "ALL" : join("_", database_grant.privileges)}" => database_grant }
+  schema_grants   = { for schema_grant in var.schema_grants : "${one(snowflake_database_role.this[*].database)}_${one(snowflake_database_role.this[*].name)}_${schema_grant.schema_name != null ? schema_grant.schema_name : "ALL_SCHEMAS"}_${schema_grant.all_privileges == true ? "ALL" : join("_", schema_grant.privileges)}" => schema_grant }
 }
