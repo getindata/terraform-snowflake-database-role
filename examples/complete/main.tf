@@ -7,6 +7,11 @@ module "snowflake_database_role" {
   name          = "PS_DB_ROLE"
 
 
+  parent_database_role = "PS_DB_ROLE_1"
+  granted_database_roles = [
+    "PS_DB_ROLE_2",
+    "PS_DB_ROLE_3"
+  ]
   database_grants = [
     {
       privileges = ["USAGE", "CREATE SCHEMA"]
