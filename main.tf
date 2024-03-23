@@ -65,23 +65,23 @@ resource "snowflake_grant_privileges_to_database_role" "schema_objects_grants" {
   database_role_name = local.database_role_name
 
   on_schema_object {
-    object_type = each.value.object_type
-    object_name = each.value.object_name != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${element(split("/", each.value.object_name), 0)}\".\"${element(split("/", each.value.object_name), 1)}\"" : null
+    object_type = each.value.object_type != null && !try(each.value.on_all, false) && !try(each.value.on_future, false) ? each.value.object_type : null
+    object_name = each.value.object_name != null && !try(each.value.on_all, false) && !try(each.value.on_future, false) ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.in_schema}\".\"${each.value.object_name}\"" : null
     dynamic "all" {
-      for_each = each.value.all != null ? [1] : []
+      for_each = try(each.value.on_all, false) ? [1] : []
       content {
-        object_type_plural = each.value.all.object_type_plural
-        in_database        = each.value.all.in_database
-        in_schema          = each.value.all.in_schema != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.all.in_schema}\"" : null
+        object_type_plural = each.value.object_type
+        in_database        = each.value.in_schema != null ? null : one(snowflake_database_role.this[*].database)
+        in_schema          = each.value.in_schema != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.in_schema}\"" : null
       }
     }
 
     dynamic "future" {
-      for_each = each.value.future != null ? [1] : []
+      for_each = try(each.value.on_future, false) ? [1] : []
       content {
-        object_type_plural = each.value.future.object_type_plural
-        in_database        = each.value.future.in_database
-        in_schema          = each.value.future.in_schema != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.future.in_schema}\"" : null
+        object_type_plural = each.value.object_type
+        in_database        = each.value.in_schema != null ? null : one(snowflake_database_role.this[*].database)
+        in_schema          = each.value.in_schema != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.in_schema}\"" : null
       }
     }
   }

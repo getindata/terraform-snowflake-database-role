@@ -79,16 +79,9 @@ variable "schema_objects_grants" {
     privileges        = optional(list(string))
     object_type       = optional(string)
     object_name       = optional(string)
-    all = optional(object({
-      object_type_plural = string
-      in_database        = optional(string)
-      in_schema          = optional(string)
-    }))
-    future = optional(object({
-      object_type_plural = string
-      in_database        = optional(string)
-      in_schema          = optional(string)
-    }))
+    on_all            = optional(bool, false)
+    in_schema         = optional(string)
+    on_future         = optional(bool, false)
   }))
   default = []
 
@@ -100,14 +93,9 @@ variable "schema_objects_grants" {
   validation {
     condition = alltrue([for grant in var.schema_objects_grants :
       (grant.object_type != null && grant.object_name != null ? 1 : 0) +
-      (grant.all != null ? 1 : 0) +
-      (grant.future != null ? 1 : 0) == 1
+      (grant.on_all == true ? 1 : 0) +
+      (grant.on_future == true ? 1 : 0) == 1
     ])
-    error_message = "Variable `schema_objects_grants` fails validation - only one of `object_type` and `object_name`, `all`, or `future` can be set."
-  }
-
-  validation {
-    condition     = alltrue([for grant in var.schema_objects_grants : grant.object_name != null ? can(regex("/", grant.object_name)) : true])
-    error_message = "Variable `schema_objects_grants` fails validation - `object_name` must contain '/' and have schema_name/object_name format."
+    error_message = "Variable `schema_objects_grants` fails validation - only one of `object_type` and `object_name`, `on_all`, or `on_future` can be set."
   }
 }
