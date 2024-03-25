@@ -73,29 +73,26 @@ variable "schema_grants" {
 
 variable "schema_objects_grants" {
   description = "Grants on a schema object level"
-  type = list(object({
+  type = map(list(object({
     all_privileges    = optional(bool)
     with_grant_option = optional(bool)
     privileges        = optional(list(string))
-    object_type       = optional(string)
     object_name       = optional(string)
     on_all            = optional(bool, false)
-    in_schema         = optional(string)
+    schema_name       = optional(string)
     on_future         = optional(bool, false)
-  }))
-  default = []
+  })))
+  default = {}
 
   validation {
-    condition     = alltrue([for grant in var.schema_objects_grants : (grant.privileges != null) != (grant.all_privileges != null)])
+    condition     = alltrue([for object_type, grants in var.schema_objects_grants : alltrue([for grant in grants : (grant.privileges != null) != (grant.all_privileges != null)])])
     error_message = "Variable `schema_objects_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
   }
 
   validation {
-    condition = alltrue([for grant in var.schema_objects_grants :
-      (grant.object_type != null && grant.object_name != null ? 1 : 0) +
-      (grant.on_all == true ? 1 : 0) +
-      (grant.on_future == true ? 1 : 0) == 1
-    ])
-    error_message = "Variable `schema_objects_grants` fails validation - only one of `object_type` and `object_name`, `on_all`, or `on_future` can be set."
+    condition = alltrue([for object_type, grants in var.schema_objects_grants : alltrue([for grant in grants :
+      !(grant.object_name != null && (grant.on_all == true || grant.on_future == true))
+    ])])
+    error_message = "Variable `schema_objects_grants` fails validation - `object_name` cannot be set with `on_all` or `on_future`."
   }
 }

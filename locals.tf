@@ -22,19 +22,47 @@ locals {
   }
 
   schema_objects_grants = {
-    for schema_objects_grant in var.schema_objects_grants :
-    "${one(snowflake_database_role.this[*].database)}_${one(snowflake_database_role.this[*].name)}${
-      schema_objects_grant.object_type != null && schema_objects_grant.object_name != null ?
-      "_${schema_objects_grant.object_type}_${schema_objects_grant.object_name}_${schema_objects_grant.all_privileges == true ? "ALL" : join("_", schema_objects_grant.privileges)}"
+    for index, grant in flatten([
+      for object_type, grants in var.schema_objects_grants : [
+        for grant in grants :
+        grant.on_all && grant.on_future ? [
+          merge(
+            grant,
+            {
+              object_type = "${object_type}S",
+              on_future   = true,
+              on_all      = false
+            }
+          ),
+          merge(
+            grant,
+            {
+              object_type = "${object_type}S",
+              on_future   = false,
+              on_all      = true
+            }
+          )
+          ] : [
+          merge(
+            grant,
+            {
+              object_type = grant.on_all || grant.on_future ? "${object_type}S" : object_type
+            }
+          )
+        ]
+      ]
+      ]) : "${one(snowflake_database_role.this[*].database)}_${one(snowflake_database_role.this[*].name)}${
+      grant.object_type != null && grant.object_name != null ?
+      "_${grant.object_type}_${grant.object_name}_${grant.all_privileges == true ? "ALL" : join("_", grant.privileges)}"
       : ""
       }${
-      schema_objects_grant.on_all != null && schema_objects_grant.on_all ?
-      "_ALL_${schema_objects_grant.object_type}${schema_objects_grant.in_schema != null ? "_${schema_objects_grant.in_schema}_${schema_objects_grant.all_privileges == true ? "ALL" : join("_", schema_objects_grant.privileges)}" : ""}"
+      grant.on_all != null && grant.on_all ?
+      "_ALL_${grant.object_type}${grant.schema_name != null ? "_${grant.schema_name}_${grant.all_privileges == true ? "ALL" : join("_", grant.privileges)}" : ""}"
       : ""
       }${
-      schema_objects_grant.on_future != null && schema_objects_grant.on_future ?
-      "_FUTURE_${schema_objects_grant.object_type}${schema_objects_grant.in_schema != null ? "_${schema_objects_grant.in_schema}_${schema_objects_grant.all_privileges == true ? "ALL" : join("_", schema_objects_grant.privileges)}" : ""}"
+      grant.on_future != null && grant.on_future ?
+      "_FUTURE_${grant.object_type}${grant.schema_name != null ? "_${grant.schema_name}_${grant.all_privileges == true ? "ALL" : join("_", grant.privileges)}" : ""}"
       : ""
-    }" => schema_objects_grant
+    }" => grant
   }
 }

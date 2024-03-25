@@ -33,25 +33,32 @@ module "snowflake_database_role" {
   #   },
   # ]
 
-  schema_objects_grants = [
-    {
-      object_type = "VIEWS"
-      privileges  = ["SELECT"]
-      on_all      = true
-      in_schema   = "BRONZE"
-    },
-    {
-      object_type = "TABLE"
-      privileges  = ["SELECT"]
-      object_name = "TEST_TABLE"
-      in_schema   = "BRONZE"
-    },
-    {
-      object_type = "ICEBERG TABLES"
-      privileges  = ["SELECT"]
-      on_future   = true
-      in_schema   = "BRONZE"
-    }
-  ]
-
+  schema_objects_grants = {
+    "TABLE" = [
+      {
+        privileges  = ["SELECT"]
+        object_name = "TEST_TABLE"
+        schema_name = "BRONZE"
+      },
+      {
+        all_privileges = true
+        object_name    = "TEST_TABLE_2"
+        schema_name    = "BRONZE"
+      }
+    ]
+    "ICEBERG TABLE" = [
+      {
+        privileges = ["SELECT"]
+        on_future  = true
+        on_all     = true
+      },
+      {
+        privileges  = ["SELECT"]
+        object_name = "TEST_ICEBERG_TABLE"
+        schema_name = "BRONZE"
+      }
+    ]
+  }
 }
+
+
