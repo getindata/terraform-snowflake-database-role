@@ -2,36 +2,36 @@ module "snowflake_database_role" {
   source  = "../../"
   context = module.this.context
 
-  database_name = "PS_PLAYGROUND"
-  comment       = "Database role for PS_PLAYGROUND"
-  name          = "PS_DB_ROLE"
+  database_name = "TEST_PLAYGROUND"
+  comment       = "Database role for TEST_PLAYGROUND"
+  name          = "TEST_DB_ROLE"
 
 
-  # parent_database_role = "PS_DB_ROLE_1"
-  # granted_database_roles = [
-  #   "PS_DB_ROLE_2",
-  #   "PS_DB_ROLE_3"
-  # ]
-  # database_grants = [
-  #   {
-  #     privileges = ["USAGE", "CREATE SCHEMA"]
-  #   },
-  # ]
+  parent_database_role = "TEST_DB_ROLE_1"
+  granted_database_roles = [
+    "TEST_DB_ROLE_2",
+    "TEST_DB_ROLE_3"
+  ]
+  database_grants = [
+    {
+      privileges = ["USAGE", "CREATE SCHEMA"]
+    },
+  ]
 
-  # schema_grants = [
-  #   {
-  #     schema_name = "BRONZE"
-  #     privileges  = ["USAGE"]
-  #   },
-  #   {
-  #     future_schemas_in_database = true
-  #     privileges                 = ["USAGE"]
-  #   },
-  #   {
-  #     all_schemas_in_database = true
-  #     privileges              = ["USAGE"]
-  #   },
-  # ]
+  schema_grants = [
+    {
+      schema_name = "BRONZE"
+      privileges  = ["USAGE"]
+    },
+    {
+      future_schemas_in_database = true
+      privileges                 = ["USAGE"]
+    },
+    {
+      all_schemas_in_database = true
+      privileges              = ["USAGE"]
+    },
+  ]
 
   schema_objects_grants = {
     "TABLE" = [
@@ -46,19 +46,19 @@ module "snowflake_database_role" {
         schema_name    = "BRONZE"
       }
     ]
-    "ICEBERG TABLE" = [
+    "SECRET" = [
       {
-        privileges = ["SELECT"]
-        on_future  = true
-        on_all     = true
-      },
+        all_privileges = true
+        object_name    = "SERVICE_NOW_CREDS_PW"
+        schema_name    = "BRONZE"
+      }
+    ]
+    "ALERT" = [
       {
-        privileges  = ["SELECT"]
-        object_name = "TEST_ICEBERG_TABLE"
-        schema_name = "BRONZE"
+        all_privileges = true
+        on_future      = true
+        on_all         = true
       }
     ]
   }
 }
-
-
