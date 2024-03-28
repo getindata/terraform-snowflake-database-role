@@ -59,7 +59,13 @@ variable "schema_grants" {
     error_message = "Variable `schema_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
   }
   validation {
-    condition = alltrue([for grant in var.schema_grants :
+      condition = alltrue([for grant in var.schema_grants :
+      sum([
+        grant.all_schemas_in_database != null ? 1 : 0,
+        grant.future_schemas_in_database != null ? 1 : 0,
+        grant.schema_name != null ? 1 : 0
+      ]) == 1
+    ])
       sum(
         [
           grant.all_schemas_in_database != null ? 1 : 0,
