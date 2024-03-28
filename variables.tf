@@ -71,7 +71,43 @@ variable "schema_grants" {
 }
 
 variable "schema_objects_grants" {
-  description = "Grants on a schema object level"
+  description = <<EOF
+  Grants on a schema object level
+
+  Example usage:
+
+  schema_objects_grants = {
+    "TABLE" = [
+      {
+        privileges  = ["SELECT"]
+        object_name = "TEST_TABLE"
+        schema_name = "BRONZE"
+      },
+      {
+        all_privileges = true
+        object_name    = "TEST_TABLE_2"
+        schema_name    = "BRONZE"
+      }
+    ]
+    "SECRET" = [
+      {
+        all_privileges = true
+        object_name    = "SERVICE_NOW_CREDS_PW"
+        schema_name    = "BRONZE"
+      }
+    ]
+    "ALERT" = [
+      {
+        all_privileges = true
+        on_future      = true
+        on_all         = true
+      }
+    ]
+  }
+
+  Note: If you don't provide a schema_name, the grants will be created in plural form.
+        List of the all objects can be found [here](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/grant_privileges_to_role#object_type)
+  EOF
   type = map(list(object({
     all_privileges    = optional(bool)
     with_grant_option = optional(bool)
