@@ -61,7 +61,6 @@ module "snowflake_database_role" {
   context = module.this.context
 
   database_name = snowflake_database.this.name
-  comment       = "Database role for PS_PLAYGROUND"
   name          = "TEST_DB_ROLE"
 
 

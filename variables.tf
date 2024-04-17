@@ -70,20 +70,13 @@ variable "schema_objects_grants" {
     "TABLE" = [
       {
         privileges  = ["SELECT"]
-        object_name = "TEST_TABLE"
-        schema_name = "BRONZE"
+        object_name = snowflake_table.table_1.name
+        schema_name = snowflake_schema.this.name
       },
       {
         all_privileges = true
-        object_name    = "TEST_TABLE_2"
-        schema_name    = "BRONZE"
-      }
-    ]
-    "SECRET" = [
-      {
-        all_privileges = true
-        object_name    = "SERVICE_NOW_CREDS_PW"
-        schema_name    = "BRONZE"
+        object_name    = snowflake_table.table_2.name
+        schema_name    = snowflake_schema.this.name
       }
     ]
     "ALERT" = [
