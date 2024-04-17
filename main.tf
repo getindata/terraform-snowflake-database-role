@@ -50,9 +50,9 @@ resource "snowflake_grant_privileges_to_database_role" "schema_grants" {
   database_role_name = local.database_role_name
 
   on_schema {
-    all_schemas_in_database    = each.value.all_schemas_in_database != null ? one(snowflake_database_role.this[*].database) : null
+    all_schemas_in_database    = each.value.all_schemas_in_database != false ? one(snowflake_database_role.this[*].database) : null
     schema_name                = each.value.schema_name != null ? "\"${one(snowflake_database_role.this[*].database)}\".\"${each.value.schema_name}\"" : null
-    future_schemas_in_database = each.value.future_schemas_in_database != null ? one(snowflake_database_role.this[*].database) : null
+    future_schemas_in_database = each.value.future_schemas_in_database != false ? one(snowflake_database_role.this[*].database) : null
   }
 }
 
