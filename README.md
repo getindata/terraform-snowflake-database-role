@@ -14,59 +14,59 @@
 ---
 
 Terraform module for managing Snowflake Database roles.
-Additionally, this module allows creating multiple grants on different Snowflake resources.
+
+- Creates Snowflake roles with specific privileges on databases and schemas.
+- Allows granting of privileges on future schemas in a database.
+- Allows granting of privileges on all existing schemas in a database.
+- Allows granting of privileges on specific schema objects like tables.
+- Supports granting of all privileges or specific ones based on the configuration.
+- Can be used to create a hierarchy of roles by assigning parent roles.
+- Can be used to grant roles to other roles.
 
 ## USAGE
 
 ```terraform
+resource "snowflake_database" "this" {
+  name = "TEST_DB"
+}
+
+resource "snowflake_schema" "this" {
+  database = snowflake_database.this.name
+  name     = "BRONZE"
+}
+
 module "snowflake_database_role" {
-  source  = "getindata/database-role/snowflake"
+  source = "../../"
 
-  context = module.this.context
+  database_name = snowflake_database.this.name
+  name          = "TEST_DB_ROLE"
 
-  database_name = "PLAYGROUND_DB"
-  comment       = "Database role for PLAYGROUND_DB"
-  name          = "EXAMPLE_DB_ROLE"
 
-  parent_database_role = "EXAMPLE_DB_ROLE_1"
-  granted_database_roles = [
-    "EXAMPLE_DB_ROLE_2",
-    "EXAMPLE_DB_ROLE_3"
-  ]
-  database_grants = [
+  schema_grants = [
     {
-      privileges = ["USAGE", "CREATE SCHEMA"]
+      future_schemas_in_database = true
+      all_schemas_in_database    = true
+      all_privileges             = true
     },
   ]
 
-  schema_objects_grants = [
-    {
-      privileges = ["SELECT"]
-      future = {
-        object_type_plural = "TABLES"
-        in_schema          = "BRONZE"
+  schema_objects_grants = {
+    "TABLE" = [
+      {
+        all_privileges = true
+        on_future      = true
+        on_all         = true
+        schema_name    = snowflake_schema.this.name
       }
-    },
-    {
-      privileges  = ["SELECT"]
-      object_type = "TABLE"
-      object_name = "BRONZE/TEST_TABLE"
-    },
-    {
-      privileges = ["SELECT"]
-      future = {
-        object_type_plural = "ICEBERG TABLES"
-        in_schema          = "BRONZE"
-      }
-    }
-  ]
+    ]
+  }
 }
 ```
 
 ## EXAMPLES
 
-- [Simple](examples/simple) - creates a role
-- [Complete](examples/complete) - creates a role with example grants
+- [Simple](examples/simple) - Basic usage of the module
+- [Complete](examples/complete) - Advanced usage of the module1
 <!-- BEGIN_TF_DOCS -->
 
 
