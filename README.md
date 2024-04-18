@@ -15,7 +15,7 @@
 
 Terraform module for managing Snowflake Database roles.
 
-- Creates Snowflake roles with specific privileges on databases and schemas.
+- Creates Snowflake database role with specific privileges on database and schemas.
 - Allows granting of privileges on future schemas in a database.
 - Allows granting of privileges on all existing schemas in a database.
 - Allows granting of privileges on specific schema objects like tables.
