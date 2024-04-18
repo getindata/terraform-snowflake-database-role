@@ -88,8 +88,8 @@ variable "schema_objects_grants" {
     ]
   }
 
-  Note: If you don't provide a schema_name, the grants will be created in plural form.
-        List of the all objects can be found [here](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/grant_privileges_to_role#object_type)
+  Note: If you don't provide a schema_name, the grants will be created for all objects of that type in the database.
+        You can find a list of all object types [here](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/grant_privileges_to_database_role#object_type)
   EOF
   type = map(list(object({
     all_privileges    = optional(bool)
