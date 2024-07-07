@@ -69,11 +69,11 @@ module "snowflake_database_role" {
     snowflake_database_role.db_role_2.name,
     snowflake_database_role.db_role_3.name
   ]
-  database_grants = [
-    {
-      privileges = ["USAGE", "CREATE SCHEMA"]
-    },
-  ]
+
+  database_grants = {
+    privileges = ["USAGE", "CREATE SCHEMA"]
+  }
+
 
   schema_grants = [
     {

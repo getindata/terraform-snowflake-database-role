@@ -8,10 +8,8 @@ locals {
   database_role_name = "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\""
 
   database_grants = {
-    for database_grant in var.database_grants :
-    "${one(snowflake_database_role.this[*].name)}_${database_grant.all_privileges == true ? "ALL" : "CUSTOM"}" => database_grant
+    "${var.database_grants.all_privileges == true ? "ALL" : "CUSTOM"}" = var.database_grants
   }
-
   schema_grants = {
     for index, schema_grant in flatten([
       for grant in var.schema_grants : grant.future_schemas_in_database && grant.all_schemas_in_database ? [
@@ -31,8 +29,7 @@ locals {
         )
       ] : [grant]
     ]) :
-    "${one(snowflake_database_role.this[*].name)}_${
-      schema_grant.schema_name != null ? schema_grant.schema_name :
+    "${schema_grant.schema_name != null ? schema_grant.schema_name :
       schema_grant.all_schemas_in_database != false ? "ALL_SCHEMAS" :
       schema_grant.future_schemas_in_database != false ? "FUTURE_SCHEMAS" : ""
     }_${schema_grant.all_privileges == true ? "ALL" : "CUSTOM"}_${index}" => schema_grant
@@ -67,7 +64,7 @@ locals {
           )
         ]
       ]
-      ]) : "${one(snowflake_database_role.this[*].name)}${
+      ]) : "${
       grant.object_type != null && grant.object_name != null ?
       "_${grant.object_type}_${grant.object_name}_${grant.all_privileges == true ? "ALL" : "CUSTOM"}"
       : ""

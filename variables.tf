@@ -26,19 +26,17 @@ variable "granted_database_roles" {
   type        = list(string)
   default     = []
 }
-
 variable "database_grants" {
   description = "Grants on a database level"
-  type = list(object({
+  type = object({
     all_privileges    = optional(bool)
     with_grant_option = optional(bool, false)
     privileges        = optional(list(string), null)
-    database_name     = optional(string, null)
-  }))
-  default = []
+  })
+  default = {}
 
   validation {
-    condition     = alltrue([for grant in var.database_grants : (grant.privileges != null) != (grant.all_privileges == true)])
+    condition     = (var.database_grants.privileges != null) != (var.database_grants.all_privileges == true)
     error_message = "Variable `database_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
   }
 }
