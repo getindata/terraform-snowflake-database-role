@@ -36,7 +36,7 @@ variable "database_grants" {
   default = {}
 
   validation {
-    condition     = (var.database_grants.privileges != null) != (var.database_grants.all_privileges == true)
+    condition     = var.database_grants == {} ? (var.database_grants.privileges != null) != (var.database_grants.all_privileges == true) : true
     error_message = "Variable `database_grants` fails validation - only one of `privileges` or `all_privileges` can be set."
   }
 }

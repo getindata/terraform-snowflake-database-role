@@ -117,6 +117,6 @@ module "snowflake_database_role" {
 ## Usage
 ```
 terraform init
-terraform plan -var-file fixtures.tfvars -out tfplan
+terraform plan -out tfplan
 terraform apply tfplan
 ```

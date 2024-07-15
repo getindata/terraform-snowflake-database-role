@@ -7,9 +7,10 @@ locals {
 
   database_role_name = "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\""
 
-  database_grants = {
+  database_grants = var.database_grants.all_privileges == null && var.database_grants.privileges == null ? {} : {
     "${var.database_grants.all_privileges == true ? "ALL" : "CUSTOM"}" = var.database_grants
   }
+
   schema_grants = {
     for index, schema_grant in flatten([
       for grant in var.schema_grants : grant.future_schemas_in_database && grant.all_schemas_in_database ? [

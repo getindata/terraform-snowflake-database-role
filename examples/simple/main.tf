@@ -13,7 +13,6 @@ module "snowflake_database_role" {
   database_name = snowflake_database.this.name
   name          = "TEST_DB_ROLE"
 
-
   schema_grants = [
     {
       future_schemas_in_database = true
