@@ -1,6 +1,9 @@
-# Example output from the module
+output "name" {
+  description = "Name of the database role"
+  value       = one(snowflake_database_role.this[*].name)
+}
 
-output "example_output" {
-  description = "Example output of the module"
-  value       = one(null_resource.output_input[*].id)
+output "fully_qualified_name" {
+  description = "Name of the database role in fully qualified format (\"DB_NAME\".\"ROLE_NAME\")"
+  value       = local.database_role_name
 }
