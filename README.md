@@ -1,10 +1,10 @@
-# Snowflake Role Terraform Module
+# Snowflake Database Role Terraform Module
 
 ![Snowflake](https://img.shields.io/badge/-SNOWFLAKE-249edc?style=for-the-badge&logo=snowflake&logoColor=white)
 ![Terraform](https://img.shields.io/badge/terraform-%235835CC.svg?style=for-the-badge&logo=terraform&logoColor=white)
 
-![License](https://badgen.net/github/license/getindata/terraform-snowflake-role/)
-![Release](https://badgen.net/github/release/getindata/terraform-snowflake-role/)
+![License](https://badgen.net/github/license/getindata/terraform-snowflake-database-role/)
+![Release](https://badgen.net/github/release/getindata/terraform-snowflake-database-role/)
 
 <p align="center">
   <img height="150" src="https://getindata.com/img/logo.svg">
@@ -155,7 +155,7 @@ Apache 2 Licensed. See [LICENSE](LICENSE) for full details.
 ## AUTHORS
 
 <!--- Replace repository name -->
-<a href="https://github.com/getindata/REPO_NAME/graphs/contributors">
+<a href="https://github.com/getindata/terraform-snowflake-database-role/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=getindata/terraform-module-template" />
 </a>
 
