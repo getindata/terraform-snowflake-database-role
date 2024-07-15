@@ -8,7 +8,7 @@ locals {
   database_role_name = "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\""
 
   database_grants = var.database_grants.all_privileges == null && var.database_grants.privileges == null ? {} : {
-    "${var.database_grants.all_privileges == true ? "ALL" : "CUSTOM"}" = var.database_grants
+    var.database_grants.all_privileges == true ? "ALL" : "CUSTOM" = var.database_grants
   }
 
   schema_grants = {
