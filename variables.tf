@@ -15,6 +15,12 @@ variable "descriptor_name" {
   default     = "snowflake-database-role"
 }
 
+variable "parent_database_role" {
+  description = "DEPRECATED variable - please use `granted_to_database_roles` instead"
+  type        = string
+  default     = null
+}
+
 variable "granted_to_roles" {
   description = "List of Snowflake Account Roles to grant this role to"
   type        = list(string)

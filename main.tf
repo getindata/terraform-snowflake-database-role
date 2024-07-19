@@ -23,6 +23,13 @@ resource "snowflake_grant_database_role" "granted_to_role" {
   parent_role_name   = each.value
 }
 
+resource "snowflake_grant_database_role" "parent_database_role" {
+  count = module.this.enabled && var.parent_database_role != null ? 1 : 0
+
+  database_role_name        = local.database_role_name
+  parent_database_role_name = var.parent_database_role
+}
+
 resource "snowflake_grant_database_role" "granted_to_database_roles" {
   for_each = toset(module.this.enabled ? var.granted_to_database_roles : [])
 
