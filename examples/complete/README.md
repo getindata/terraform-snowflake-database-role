@@ -166,24 +166,26 @@ terraform apply tfplan
 
 | Name | Version |
 |------|---------|
-| <a name="provider_snowflake"></a> [snowflake](#provider\_snowflake) | 0.87.2 |
+| <a name="provider_snowflake"></a> [snowflake](#provider\_snowflake) | >=0.90 |
 
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
-| <a name="requirement_snowflake"></a> [snowflake](#requirement\_snowflake) | 0.87.2 |
+| <a name="requirement_snowflake"></a> [snowflake](#requirement\_snowflake) | >=0.90 |
 
 ## Resources
 
 | Name | Type |
 |------|------|
-| [snowflake_database.this](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/0.87.2/docs/resources/database) | resource |
-| [snowflake_database_role.db_role_1](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/0.87.2/docs/resources/database_role) | resource |
-| [snowflake_database_role.db_role_2](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/0.87.2/docs/resources/database_role) | resource |
-| [snowflake_database_role.db_role_3](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/0.87.2/docs/resources/database_role) | resource |
-| [snowflake_schema.this](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/0.87.2/docs/resources/schema) | resource |
-| [snowflake_table.table_1](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/0.87.2/docs/resources/table) | resource |
-| [snowflake_table.table_2](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/0.87.2/docs/resources/table) | resource |
+| [snowflake_database.this](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/database) | resource |
+| [snowflake_database_role.db_role_1](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/database_role) | resource |
+| [snowflake_database_role.db_role_2](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/database_role) | resource |
+| [snowflake_database_role.db_role_3](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/database_role) | resource |
+| [snowflake_role.role_1](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/role) | resource |
+| [snowflake_role.role_2](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/role) | resource |
+| [snowflake_schema.this](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/schema) | resource |
+| [snowflake_table.table_1](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/table) | resource |
+| [snowflake_table.table_2](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/table) | resource |
 <!-- END_TF_DOCS -->
