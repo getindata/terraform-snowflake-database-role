@@ -16,17 +16,31 @@ resource "snowflake_database_role" "this" {
   comment  = var.comment
 }
 
+resource "snowflake_grant_database_role" "granted_to_role" {
+  for_each = toset(module.this.enabled ? var.granted_to_roles : [])
+
+  database_role_name = local.database_role_name
+  parent_role_name   = each.value
+}
+
 resource "snowflake_grant_database_role" "parent_database_role" {
   count = module.this.enabled && var.parent_database_role != null ? 1 : 0
 
   database_role_name        = local.database_role_name
-  parent_database_role_name = "${one(snowflake_database_role.this[*].database)}.${var.parent_database_role}"
+  parent_database_role_name = var.parent_database_role
+}
+
+resource "snowflake_grant_database_role" "granted_to_database_roles" {
+  for_each = toset(module.this.enabled ? var.granted_to_database_roles : [])
+
+  database_role_name        = local.database_role_name
+  parent_database_role_name = each.value
 }
 
 resource "snowflake_grant_database_role" "granted_database_roles" {
   for_each = toset(module.this.enabled ? var.granted_database_roles : [])
 
-  database_role_name        = each.value != null ? "${one(snowflake_database_role.this[*].database)}.${each.value}" : null
+  database_role_name        = each.value
   parent_database_role_name = local.database_role_name
 }
 

@@ -41,6 +41,13 @@ resource "snowflake_table" "table_2" {
   }
 }
 
+resource "snowflake_role" "role_1" {
+  name = "ROLE_1"
+}
+
+resource "snowflake_role" "role_2" {
+  name = "ROLE_2"
+}
 resource "snowflake_database_role" "db_role_1" {
   database = snowflake_database.this.name
   name     = "DB_ROLE_1"
@@ -63,11 +70,18 @@ module "snowflake_database_role" {
   database_name = snowflake_database.this.name
   name          = "TEST_DB_ROLE"
 
+  granted_to_roles = [
+    snowflake_role.role_1.name,
+    snowflake_role.role_2.name
+  ]
 
-  parent_database_role = snowflake_database_role.db_role_1.name
+  granted_to_database_roles = [
+    "${snowflake_database.this.name}.${snowflake_database_role.db_role_1.name}"
+  ]
+
   granted_database_roles = [
-    snowflake_database_role.db_role_2.name,
-    snowflake_database_role.db_role_3.name
+    "${snowflake_database.this.name}.${snowflake_database_role.db_role_2.name}",
+    "${snowflake_database.this.name}.${snowflake_database_role.db_role_3.name}"
   ]
 
   database_grants = {

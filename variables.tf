@@ -16,9 +16,21 @@ variable "descriptor_name" {
 }
 
 variable "parent_database_role" {
-  description = "Fully qualified Parent Database Role name (`DB_NAME.ROLE_NAME`), to create parent-child relationship"
+  description = "DEPRECATED variable - please use `granted_to_database_roles` instead"
   type        = string
   default     = null
+}
+
+variable "granted_to_roles" {
+  description = "List of Snowflake Account Roles to grant this role to"
+  type        = list(string)
+  default     = []
+}
+
+variable "granted_to_database_roles" {
+  description = "Fully qualified Parent Database Role name (`DB_NAME.ROLE_NAME`), to create parent-child relationship"
+  type        = list(string)
+  default     = []
 }
 
 variable "granted_database_roles" {
