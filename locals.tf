@@ -5,7 +5,7 @@ locals {
     lookup(module.role_label.descriptors, var.descriptor_name, module.role_label.id), "/${module.role_label.delimiter}${module.role_label.delimiter}+/", module.role_label.delimiter
   ), module.role_label.delimiter) : null
 
-  database_role_name = "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\""
+  database_role_name = module.this.enabled ? "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\"" : null
 
   database_grants = var.database_grants.all_privileges == null && var.database_grants.privileges == null ? {} : {
     var.database_grants.all_privileges == true ? "ALL" : "CUSTOM" = var.database_grants
