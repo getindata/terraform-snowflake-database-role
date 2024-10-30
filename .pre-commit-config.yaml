@@ -6,7 +6,8 @@ repos:
       - id: terraform-fmt
       - id: tflint
         args:
-          - "--config=__GIT_ROOT__/.tflint.hcl"
+          - "--module"
+          #- "--config=__GIT_ROOT__/.tflint.hcl"
 
   - repo: https://github.com/terraform-docs/terraform-docs
     rev: "v0.18.0" # Get the latest from: https://github.com/terraform-docs/terraform-docs/releases

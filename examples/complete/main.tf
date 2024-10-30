@@ -41,11 +41,11 @@ resource "snowflake_table" "table_2" {
   }
 }
 
-resource "snowflake_role" "role_1" {
+resource "snowflake_account_role" "role_1" {
   name = "ROLE_1"
 }
 
-resource "snowflake_role" "role_2" {
+resource "snowflake_account_role" "role_2" {
   name = "ROLE_2"
 }
 resource "snowflake_database_role" "db_role_1" {
@@ -63,16 +63,15 @@ resource "snowflake_database_role" "db_role_3" {
   name     = "DB_ROLE_3"
 }
 
-module "snowflake_database_role" {
-  source  = "../../"
-  context = module.this.context
+module "snowflake_database_role_1" {
+  source = "../../"
 
   database_name = snowflake_database.this.name
-  name          = "TEST_DB_ROLE"
+  name          = "TEST_DB_ROLE_1"
 
   granted_to_roles = [
-    snowflake_role.role_1.name,
-    snowflake_role.role_2.name
+    snowflake_account_role.role_1.name,
+    snowflake_account_role.role_2.name
   ]
 
   granted_to_database_roles = [
@@ -121,5 +120,32 @@ module "snowflake_database_role" {
         on_all         = true
       }
     ]
+  }
+}
+
+module "snowflake_database_role_2" {
+  source = "../../"
+
+  database_name = snowflake_database.this.name
+  name          = "TEST_DB_ROLE_2"
+  name_scheme = {
+    context_template_name = "snowflake-schema-database-role"
+    extra_values          = { schema = "BRONZE" }
+  }
+  context_templates = var.context_templates
+}
+
+
+module "snowflake_database_role_3" {
+  source = "../../"
+
+  database_name = snowflake_database.this.name
+  name          = "TEST_DB_ROLE_3"
+  name_scheme = {
+    properties = ["environment", "project", "schema", "name"]
+    extra_values = {
+      project = "PROJECT"
+      schema  = "BRONZE"
+    }
   }
 }

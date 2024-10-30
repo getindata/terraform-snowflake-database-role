@@ -1,11 +1,7 @@
 locals {
-  # Get a name from the descriptor. If not available, use default naming convention.
-  # Trim and replace function are used to avoid bare delimiters on both ends of the name and situation of adjacent delimiters.
-  name_from_descriptor = module.role_label.enabled ? trim(replace(
-    lookup(module.role_label.descriptors, var.descriptor_name, module.role_label.id), "/${module.role_label.delimiter}${module.role_label.delimiter}+/", module.role_label.delimiter
-  ), module.role_label.delimiter) : null
+  context_template = lookup(var.context_templates, var.name_scheme.context_template_name, null)
 
-  database_role_name = module.this.enabled ? "\"${one(snowflake_database_role.this[*].database)}\".\"${one(snowflake_database_role.this[*].name)}\"" : null
+  database_role_name = "${snowflake_database_role.this.database}.${snowflake_database_role.this.name}"
 
   database_grants = var.database_grants.all_privileges == null && var.database_grants.privileges == null ? {} : {
     var.database_grants.all_privileges == true ? "ALL" : "CUSTOM" = var.database_grants
