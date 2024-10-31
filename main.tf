@@ -28,6 +28,13 @@ resource "snowflake_grant_database_role" "granted_to_role" {
   parent_role_name   = each.value
 }
 
+resource "snowflake_grant_database_role" "granted_to_share" {
+  for_each = toset(var.granted_to_shares)
+
+  database_role_name = local.database_role_name
+  share_name         = each.value
+}
+
 resource "snowflake_grant_database_role" "parent_database_role" {
   count = var.parent_database_role != null ? 1 : 0
 

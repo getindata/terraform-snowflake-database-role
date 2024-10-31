@@ -26,6 +26,12 @@ variable "granted_to_roles" {
   default     = []
 }
 
+variable "granted_to_shares" {
+  description = "List of Snowflake Shares to grant this role to"
+  type        = list(string)
+  default     = []
+}
+
 variable "granted_to_database_roles" {
   description = "Fully qualified Parent Database Role name (`DB_NAME.ROLE_NAME`), to create parent-child relationship"
   type        = list(string)

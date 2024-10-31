@@ -63,6 +63,16 @@ resource "snowflake_database_role" "db_role_3" {
   name     = "DB_ROLE_3"
 }
 
+resource "snowflake_share" "this" {
+  name = "TEST_SHARE"
+}
+
+resource "snowflake_grant_privileges_to_share" "this" {
+  to_share    = snowflake_share.this.name
+  privileges  = ["USAGE"]
+  on_database = snowflake_database.this.name
+}
+
 module "snowflake_database_role_1" {
   source = "../../"
 
@@ -133,6 +143,10 @@ module "snowflake_database_role_2" {
     extra_values          = { schema = "BRONZE" }
   }
   context_templates = var.context_templates
+
+  granted_to_shares = [snowflake_share.this.name]
+
+  depends_on = [snowflake_grant_privileges_to_share.this]
 }
 
 

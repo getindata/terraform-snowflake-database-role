@@ -172,7 +172,9 @@ terraform apply tfplan
 | [snowflake_database_role.db_role_1](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/database_role) | resource |
 | [snowflake_database_role.db_role_2](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/database_role) | resource |
 | [snowflake_database_role.db_role_3](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/database_role) | resource |
+| [snowflake_grant_privileges_to_share.this](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/grant_privileges_to_share) | resource |
 | [snowflake_schema.this](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/schema) | resource |
+| [snowflake_share.this](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/share) | resource |
 | [snowflake_table.table_1](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/table) | resource |
 | [snowflake_table.table_2](https://registry.terraform.io/providers/Snowflake-Labs/snowflake/latest/docs/resources/table) | resource |
 <!-- END_TF_DOCS -->
