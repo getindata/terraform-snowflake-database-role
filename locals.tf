@@ -1,8 +1,6 @@
 locals {
   context_template = lookup(var.context_templates, var.name_scheme.context_template_name, null)
 
-  database_role_name = "${snowflake_database_role.this.database}.${snowflake_database_role.this.name}"
-
   database_grants = var.database_grants.all_privileges == null && var.database_grants.privileges == null ? {} : {
     var.database_grants.all_privileges == true ? "ALL" : "CUSTOM" = var.database_grants
   }

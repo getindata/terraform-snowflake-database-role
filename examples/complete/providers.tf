@@ -7,6 +7,6 @@ provider "context" {
   }
 
   values = {
-    environment = "DEV"
+    environment = "dev"
   }
 }
