@@ -154,12 +154,13 @@ module "snowflake_database_role_3" {
   source = "../../"
 
   database_name = snowflake_database.this.name
-  name          = "TEST_DB_ROLE_3"
+  name          = "test_db_role_3"
   name_scheme = {
     properties = ["environment", "project", "schema", "name"]
     extra_values = {
-      project = "PROJECT"
-      schema  = "BRONZE"
+      project = "project"
+      schema  = "bronze"
     }
+    uppercase = false
   }
 }
